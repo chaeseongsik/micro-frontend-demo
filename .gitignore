@@ -25,3 +25,4 @@
 
 # build process
 .turbo
+.vs/

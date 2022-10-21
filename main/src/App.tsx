@@ -33,7 +33,7 @@ export const App = () => {
                   />
                 </Route>
                 <Route exact path="/checkout">
-                  <RemoteComponent
+                <RemoteComponent
                     fallback="Loading Checkout..."
                     remote="CART"
                     component="CheckoutPage"

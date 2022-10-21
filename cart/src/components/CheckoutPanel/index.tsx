@@ -3,14 +3,15 @@ import React, { FC } from "react";
 import { useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
 import useStore from "../../store";
-import RemoteComponent from "../../../../main/src/components/RemoteComponent";
+// @ts-ignore
+import products from 'PRODUCTS/products';
 // Importing components and list of products from products app directly
 // to simplify import/export. Products list should be taken care of by a communication layer
 // And the ProductCard should be a published npm package or shared remote but need
 // to figure out how to load multiple versions of the same remote in 1 app.
-import products from "../../../../products/src/products";
 
 type PriceMap = Record<string, number>;
+
 // @ts-ignore
 const priceMap: PriceMap = products.reduce((acc: PriceMap, cur: Product) => {
   return { ...acc, [cur.name]: cur.price };
@@ -25,6 +26,11 @@ type Product = {
   price?: number;
   quantity?: number;
 };
+
+const ProductCard = React.lazy(
+  // @ts-ignore
+  () => import("PRODUCTS/ProductCard")
+);
 
 // TODO: How to do in-browser routing if using different verisons of react-router-dom
 export const CheckoutPanel: FC<Props> = ({ onClose }) => {
@@ -54,15 +60,7 @@ export const CheckoutPanel: FC<Props> = ({ onClose }) => {
       <div style={{ display: "flex", flexDirection: "column" }}>
         {cart.map(({ name, quantity }) => (
           <div key={name} style={{ margin: 20 }}>
-            <RemoteComponent
-              fallback="Loading..."
-              remote="PRODUCTS"
-              component="ProductCard"
-              name={name}
-              quantity={quantity}
-              cartView
-              price={name in priceMap ? priceMap[name] : 0}
-            />
+            <ProductCard name={name} quantity={quantity} cartView price={name in priceMap ? priceMap[name] : 0} />
           </div>
         ))}
         {cart.length === 0 && <p>No items in cart</p>}
